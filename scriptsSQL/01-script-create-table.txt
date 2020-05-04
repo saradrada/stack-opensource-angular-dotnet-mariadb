@@ -1,0 +1,50 @@
+USE DbStockVehiculos;
+
+CREATE TABLE Marca (
+	id INT NOT NULL COMMENT 'Identificador único de la marca del vehículo.',
+	nombre varchar(100) NOT NULL COMMENT 'Descriptor de la marca.',
+	CONSTRAINT Marca_PK PRIMARY KEY (id)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+COMMENT='Marcas de los vechículos.';
+
+CREATE TABLE Anio (
+	id INT NOT NULL COMMENT 'Identificador único del año.',
+	nombre SMALLINT NOT NULL COMMENT 'Descriptor del año.',
+	CONSTRAINT Anio_PK PRIMARY KEY (id)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+COMMENT='Modelo/Año del vechículo.';
+
+CREATE TABLE Modelo (
+	id INT NOT NULL COMMENT 'Identificador único del modelo.',
+	idMarca INT NOT NULL COMMENT 'Id de la marca a la cual pertenece el modelo.',
+	idAnio INT NOT NULL COMMENT 'Id del año al cual pertenece el modelo.',
+	nombre varchar(100) NOT NULL,
+	CONSTRAINT Modelo_PK PRIMARY KEY (id),
+	CONSTRAINT Modelo_FK FOREIGN KEY (idMarca) REFERENCES Marca(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	CONSTRAINT Modelo_FK_1 FOREIGN KEY (idAnio) REFERENCES Anio(id) ON DELETE RESTRICT ON UPDATE RESTRICT
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+COMMENT='Modelos de los vechículos de acuerdo a la marca y año.';
+
+CREATE TABLE Version (
+	id INT NOT NULL COMMENT 'Identificador único de la versión.',
+	idModelo INT NOT NULL,
+	nombre varchar(100) NOT NULL,
+	CONSTRAINT Version_PK PRIMARY KEY (id),
+	CONSTRAINT Version_FK FOREIGN KEY (idModelo) REFERENCES Modelo(id) ON DELETE RESTRICT ON UPDATE RESTRICT
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+COMMENT='Características del vechículo de acuerdo al modelo.';
+
+CREATE TABLE VehiculosStock (
+	id INT NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del vechículo.',
+	idVersion INT NOT NULL COMMENT 'Id de la versión del vehículo.',
+	comentarios VARCHAR(8000) NULL COMMENT 'Comentarios adicionales del vechículo.',
+	cantidad INT DEFAULT 0 NOT NULL COMMENT 'Cantidad de vechículos en existencia.',
+	CONSTRAINT VehiculosStock_PK PRIMARY KEY (id),
+	CONSTRAINT VehiculosStock_FK FOREIGN KEY (idVersion) REFERENCES Version(id)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+COMMENT='Contiene el inventario/stock de vechículos.';
